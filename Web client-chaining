@@ -1,0 +1,23 @@
+WebClient webClient = WebClient.create();
+
+webClient.get()
+        .uri("http://inventory/api/check")
+        .retrieve()
+        .bodyToMono(String.class) // 1st call
+        .flatMap(inventory -> 
+            webClient.post()
+                .uri("http://payment/api/pay?item=" + inventory)
+                .retrieve()
+                .bodyToMono(String.class) // 2nd call depends on inventory
+        )
+        .flatMap(payment ->
+            webClient.post()
+                .uri("http://shipping/api/ship?payment=" + payment)
+                .retrieve()
+                .bodyToMono(String.class) // 3rd call depends on payment
+        )
+        .subscribe(finalResult -> 
+            System.out.println("Final Result: " + finalResult)
+        );
+
+System.out.println("Thread is free to do other work...");
