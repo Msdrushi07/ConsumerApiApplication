@@ -71,7 +71,7 @@ public class RestTemplateService {
 //		headers.add("Content-Type","application/json");
 //		headers.set("Authorization", "Bearer <token>");
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<ProductResponseDto> requestData = new HttpEntity<>(product);
+		HttpEntity<ProductResponseDto> requestData = new HttpEntity<>(product,headers);
 		ResponseEntity<String> res=restTemplate.exchange("http://localhost:8080/product", HttpMethod.POST, requestData, String.class);
 		System.out.println(res.getStatusCodeValue());
 		System.out.println(res.getBody()); // convert this this string data into JsonObject for data processing
